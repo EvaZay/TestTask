@@ -27,5 +27,3 @@ Manifest*.toml
 LocalPreferences.toml
 JuliaLocalPreferences.toml
 
-*.png
-*.jpg
