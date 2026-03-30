@@ -53,7 +53,7 @@ function plot_with_constant_interpolation!(
     t::Vector{Float64}, y::Vector{<:Vector{<:Number}}, save::Bool=false, filename::String="test.png")
 
     new_t = zeros(eltype(t), length(t)*2-1)
-    new_y = [zeros(Float64, 201) for _ in 1:2]
+    new_y = [zeros(Float64, length(t)*2-1) for _ in 1:2]
 
     idx = 2
     new_t[1] = t[1]
@@ -93,6 +93,7 @@ end
 """
 function plot_with_constant_interpolation!(
     t::Vector{Float64}, y::Vector{<:Vector{<:Vector{<:Number}}}, save::Bool=false, filename::String="test.png")
+
     vector_len = length(y[1][1])
     new_t = zeros(eltype(t), length(t)*2-1)
     new_y = [zeros(Float64, length(t)*2-1) for _ in 1:2*vector_len]
@@ -107,14 +108,15 @@ function plot_with_constant_interpolation!(
     for i in eachindex(y)
         idx = 1
         for j in 1:2:length(new_y[i])-1
-            new_y[i][j] = y[i][idx][1]
-            new_y[i][j+1] = y[i][idx][1]
-            new_y[i+vector_len][j] = y[i][idx][2]
-            new_y[i+vector_len][j+1] = y[i][idx][2]
+            for k in 1:vector_len
+                new_y[i+(k-1)*2][j] = y[i][idx][k]
+                new_y[i+(k-1)*2][j+1] = y[i][idx][k]
+            end
             idx += 1
         end
-        new_y[i][end] = y[i][end][1]
-        new_y[i+vector_len][end] = y[i][end][2]
+        for k in 1:vector_len
+            new_y[i+(k-1)*2][end] = y[i][end][k]
+        end
     end
     labels = String[]
     for i in 1:vector_len
